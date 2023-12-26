@@ -23,7 +23,7 @@ int find_Number(std::string string){
     bool lastFound = false;
     for (int i{}; i < int(string.length()) ; i++){
 
-        if ((string[i] <= 57) && (string[i] >= 49)){
+        if ((isdigit(string[i])) && (isdigit(string[i]))){
             if ((not firstFound)){
                 number[0] = string[i];
                 firstFound = true;
