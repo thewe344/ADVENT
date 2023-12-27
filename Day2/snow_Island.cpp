@@ -4,13 +4,25 @@
 #include <chrono>
 #include <vector>
 
-struct colourStruct{
+struct setStruct{
     std::string setInput{};
     bool works{true};
+    int red{};
+    int green{};
+    int blue{};
 };
 
-struct setStruct {
-    std::vector<colourStruct> colourSets;
+struct setVectorStruct {
+    std::vector<setStruct> setVector;
+};
+
+struct gameStruct{
+    int gameID{};
+    bool allTrue{true};
+    int red{};
+    int green{};
+    int blue{};
+    int product{};
 };
 
 int find_game_id(std::string const& input){
@@ -38,78 +50,90 @@ size_t find_start_pos(int const& gameID){
 }
 
 
-void find_Set(setStruct & mySetStruct, size_t const& startPos, std::string const& input){
+void find_Set(setVectorStruct & mysetVectorStruct, size_t const& startPos, std::string const& input){
     size_t tracker{startPos};
     size_t nextPos{};
     while (true){
-        colourStruct newColourSet;
+        setStruct newSetStruct;
         nextPos = input.find(';',tracker);
 
         if (nextPos == std::string::npos) {
-            newColourSet.setInput = input.substr(tracker);
-            mySetStruct.colourSets.push_back(newColourSet);
+            newSetStruct.setInput = input.substr(tracker);
+            mysetVectorStruct.setVector.push_back(newSetStruct);
             break;
-        }
+        };
         
-        newColourSet.setInput = input.substr(tracker,nextPos-tracker);
-        mySetStruct.colourSets.push_back(newColourSet);
+        newSetStruct.setInput = input.substr(tracker,nextPos-tracker);
+        mysetVectorStruct.setVector.push_back(newSetStruct);
         tracker = nextPos+2;
-    }
-}
+    };
+};
 
-int find_Cubes(std::string const& input){
-    int gameID{}; 
-    size_t startPos{};
-    bool allTrue{false};
-    setStruct mySetStruct;
-    
 
-    gameID = find_game_id(input);
-    startPos = find_start_pos(gameID);
-    find_Set(mySetStruct, startPos, input);
+void search_set(setVectorStruct & mysetVectorStruct, gameStruct & myGameStruct){
+    int counterLast{};
+    int counterFirst{};
+    for (int i{}; i<static_cast<int>(mysetVectorStruct.setVector.size()); i++){
+        for(int n{}; n < static_cast<int>(mysetVectorStruct.setVector[i].setInput.length());n++){
 
-    std::cout << "From Game ID ";
-    std::cout << gameID ;
-    std::cout << "\n";
-    for (int i{}; i<static_cast<int>(mySetStruct.colourSets.size()); i++){
-        int counterLast{};
-        int counterFirst{};
-        for(int n{}; n<static_cast<int>(mySetStruct.colourSets[i].setInput.length());n++){
-
-            while(isdigit(mySetStruct.colourSets[i].setInput[n+counterLast])){
+            while(isdigit(mysetVectorStruct.setVector[i].setInput[n+counterLast])){
                 if(counterLast == 0){
                     counterFirst = n;
-                }
+                };
                 counterLast++;
-            }
+            };
 
-            if ((mySetStruct.colourSets[i].setInput[n] == 'r') and (mySetStruct.colourSets[i].setInput[n-1] != 'g')){
-                if(stoi(mySetStruct.colourSets[i].setInput.substr(counterFirst,counterLast))>=12){
-                    mySetStruct.colourSets[i].works = false;
+            if ((mysetVectorStruct.setVector[i].setInput[n] == 'r') and (mysetVectorStruct.setVector[i].setInput[n-1] != 'g')){
+                mysetVectorStruct.setVector[i].red = stoi(mysetVectorStruct.setVector[i].setInput.substr(counterFirst,counterLast));
+                if(mysetVectorStruct.setVector[i].red > 12){
+                    mysetVectorStruct.setVector[i].works = false;
                 };
                 counterLast = 0;
-            }else if ((mySetStruct.colourSets[i].setInput[n]) == 'g'){
-                if(stoi(mySetStruct.colourSets[i].setInput.substr(counterFirst,counterLast))>=13){
-                    mySetStruct.colourSets[i].works = false;
+            }else if ((mysetVectorStruct.setVector[i].setInput[n]) == 'g'){
+                mysetVectorStruct.setVector[i].green = stoi(mysetVectorStruct.setVector[i].setInput.substr(counterFirst,counterLast));
+                if( mysetVectorStruct.setVector[i].green > 13){
+                    mysetVectorStruct.setVector[i].works = false;
                 };
                 counterLast = 0;
-            }else if ((mySetStruct.colourSets[i].setInput[n]) == 'b'){
-                if(stoi(mySetStruct.colourSets[i].setInput.substr(counterFirst,counterLast))>=14){
-                    mySetStruct.colourSets[i].works = false;
+            }else if ((mysetVectorStruct.setVector[i].setInput[n]) == 'b'){
+                mysetVectorStruct.setVector[i].blue = stoi(mysetVectorStruct.setVector[i].setInput.substr(counterFirst,counterLast));
+                if(mysetVectorStruct.setVector[i].blue > 14){
+                    mysetVectorStruct.setVector[i].works = false;
                 };
                 counterLast = 0;
-            }
+            };
+        };
+        myGameStruct.allTrue = myGameStruct.allTrue && mysetVectorStruct.setVector[i].works;
+
+        if(mysetVectorStruct.setVector[i].red > myGameStruct.red){
+            myGameStruct.red = mysetVectorStruct.setVector[i].red;
+        }
+
+        if(mysetVectorStruct.setVector[i].green > myGameStruct.green){
+            myGameStruct.green = mysetVectorStruct.setVector[i].green;
+        }
+
+        if(mysetVectorStruct.setVector[i].blue > myGameStruct.blue){
+            myGameStruct.blue = mysetVectorStruct.setVector[i].blue;
         }
         
-        allTrue = allTrue && mySetStruct.colourSets[i].works;
+        
+    }
+    myGameStruct.product = myGameStruct.red * myGameStruct.green * myGameStruct.blue; 
+}
 
 
-    }
-    if (allTrue){
-        return gameID;
-    }
+gameStruct find_Cubes(std::string const& input){
+    size_t startPos{};
+    gameStruct myGameStruct{};
+    setVectorStruct mysetVectorStruct;
     
-    return 0;
+    myGameStruct.gameID = find_game_id(input);
+    startPos = find_start_pos(myGameStruct.gameID);
+    find_Set(mysetVectorStruct, startPos, input);
+    search_set(mysetVectorStruct, myGameStruct);
+
+    return myGameStruct;
 };
 
 
@@ -124,11 +148,17 @@ int main() {
         return 1;
     }
     
-    int number{};
-
+    int counter{};
+    int sumOfAllProducts{};
+    gameStruct newGameStruct;
     std::string fileString;
     while (getline(fileStream, fileString)) {
-        number += find_Cubes(fileString);
+        newGameStruct = find_Cubes(fileString);
+        sumOfAllProducts += newGameStruct.product;
+        if (newGameStruct.allTrue)
+        {
+            counter += newGameStruct.gameID;
+        }
     }
 
     fileStream.close(); // Close file
@@ -136,6 +166,10 @@ int main() {
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
     std::cout << "Time taken: " << duration.count() << " seconds" << std::endl;
-    std::cout << number;
+    std::cout << "Part 1 ";
+    std::cout << counter;
+    std::cout << "\n\n";
+    std::cout << "Part 2 ";
+    std::cout << sumOfAllProducts;
     return 0;
 }
