@@ -1,0 +1,27 @@
+
+// ([i-3][j-3]) ([i-3][j-2]) ([i-3][j-1]) ([i-3][j]) ([i-3][j+1]) ([i-3][j+2]) ([i-3][j+3]) 
+
+// ([i-2][j-3]) ([i-2][j-2]) ([i-2][j-1]) ([i-2][j]) ([i-2][j+1]) ([i-2][j+2]) ([i-2][j+3]) 
+
+// ([i-1][j-3]) ([i-1][j-2]) ([i-1][j-1]) ([i-1][j]) ([i-1][j+1]) ([i-1][j+2]) ([i-1][j+3]) 
+
+//  ([i][j-3])   ([i][j-2])   ([i][j-1])   ([i][j])   ([i][j+1])   ([i][j+2])   ([i][j+3])
+
+// ([i+1][j-3]) ([i+1][j-2]) ([i+1][j-1]) ([i+1][j]) ([i+1][j+1]) ([i+1][j+2]) ([i+1][j+3]) 
+
+// ([i+2][j-3]) ([i+2][j-2]) ([i+2][j-1]) ([i+2][j]) ([i+2][j+1]) ([i+2][j+2]) ([i+2][j+3]) 
+
+// ([i+3][j-3]) ([i+3][j-2]) ([i+3][j-1]) ([i+3][j]) ([i+3][j+1]) ([i+3][j+2]) ([i+3][j+3]) 
+
+// lookUpTable structure:
+
+//                 lookUpTable[0][0]    lookUpTable[0][1]      lookUpTable[0][2]      lookUpTable[0][3]
+// lookUpTable[0] =   ([i],[j])            ([i],[j+1])            ([i],[j+2])            ([i],[j+3])         To the right (Infront)
+// lookUpTable[1] =   ([i],[j])            ([i],[j-1])            ([i],[j-2])            ([i],[j-3])         To the left (inback)
+// lookUpTable[2] =   ([i],[j])            ([i+1],[j])            ([i+2],[j])            ([i+3],[j])         Down (Forward)
+// lookUpTable[3] =   ([i],[j])            ([i-1],[j])            ([i-2],[j])            ([i-3],[j])         Up (Backward)
+// lookUpTable[4] =   ([i],[j])           ([i+1],[j+1])          ([i+2],[j+2])          ([i+3],[j+3])        Right-down (sideways down)
+// lookUpTable[5] =   ([i],[j])           ([i-1],[j+1])          ([i-2],[j+2])          ([i-3],[j+3])        Right-Up (sideways up)
+// lookUpTable[6] =   ([i],[j])           ([i+1],[j-1])          ([i+2],[j-2])          ([i+3],[j-3])        Left-down (sideways down)
+// lookUpTable[7] =   ([i],[j])           ([i-1],[j-1])          ([i-2],[j-2])          ([i-3],[j-3])        Left-Up (sideways up)
+//                                           (lookUpTable[x][y].first,lookUpTable[x][y].second)

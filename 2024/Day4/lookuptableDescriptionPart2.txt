@@ -1,0 +1,33 @@
+
+// M.S
+// .A.   = lookUpTable[0]
+// M.S
+
+// S.M
+// .A.  = lookUpTable[1]
+// S.M
+
+// M.M
+// .A.  = lookUpTable[2]
+// S.S
+
+// S.S
+// .A.  = lookUpTable[3]
+// M.M
+
+//  ([i-1][j-1]) ([i-1][j]) ([i-1][j+1]) 
+
+//  ([i][j-1])   ([i][j])   ([i][j+1])  
+
+// ([i+1][j-1]) ([i+1][j]) ([i+1][j+1]) 
+
+// lookUpTable structure:
+//                 lookUpTable[x][0]    lookUpTable[x][1]      lookUpTable[x][2]      lookUpTable[x][3]
+// lookUpTable[0] =   ([i-1][j-1])        ([i+1][j+1])           ([i+1][j-1])           ([i-1][j+1])
+// lookUpTable[1] =   ([i-1][j+1])        ([i+1][j-1])           ([i+1][j+1])           ([i-1][j-1])
+// lookUpTable[2] =   ([i-1][j-1])        ([i+1][j+1])           ([i-1][j+1])           ([i+1][j-1])
+// lookUpTable[3] =   ([i+1][j-1])        ([i-1][j+1])           ([i+1][j+1])           ([i-1][j-1])
+//                                           (lookUpTable[x][y].first,lookUpTable[x][y].second)
+
+
+
