@@ -21,10 +21,10 @@ public:
     };
 
     struct NodeHash {
-        std::size_t operator()(const Node& n) const {
-            std::size_t h1 = std::hash<int64_t>()(n.row);
-            std::size_t h2 = std::hash<int64_t>()(n.col);
-            std::size_t h3 = std::hash<char>()(n.orientation);
+        size_t operator()(const Node& n) const {
+            size_t h1 = hash<int64_t>()(n.row);
+            size_t h2 = hash<int64_t>()(n.col);
+            size_t h3 = hash<char>()(n.orientation);
             return ((h1 << 1) ^ h2) ^ (h3 << 2);
         }
     };
