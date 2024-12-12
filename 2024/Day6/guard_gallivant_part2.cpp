@@ -103,7 +103,8 @@ bool check_guard_position(MAP& map){
             return false;
         }
 
-        if (map.mapPositions[currentPositionI+toAddI][currentPositionJ+toAddJ] == '#' ||map.mapPositions[currentPositionI+toAddI][currentPositionJ+toAddJ] == '0'){
+        if (map.mapPositions[currentPositionI+toAddI][currentPositionJ+toAddJ] == '#' || 
+            map.mapPositions[currentPositionI+toAddI][currentPositionJ+toAddJ] == '0'){
             auto result = map.visitedNodes.insert({{currentPositionI,currentPositionJ,map.currentOrientation}, true});
             if(!result.second){
                 return true;
