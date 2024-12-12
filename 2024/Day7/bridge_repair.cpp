@@ -88,25 +88,62 @@ int64_t bitwise_multiply(int64_t a, int64_t b) {
     return result;
 }
 
+void create_permutations(size_t const& size, string str, vector<string> & differentVariantions, vector<char> operators= {'x','+'}){
+    if(size == str.size()){
+        differentVariantions.push_back(str);
+        return;
+    }
+
+    for(char c: operators){
+        create_permutations(size, str+c, differentVariantions);
+    }
+
+}  
+
 void check_operators(std::vector<int64_t> const& values, int64_t const& result){
-/*     bool done = true;
-    size_t sizeOfValuesToCheck = values.size(); */
     int64_t tempResult{};
-    //while(done){
-        tempResult = values[0];
-        for (int64_t j{}; j < static_cast<int64_t>(values.size())-1; j++ ){
-            cout << values[j];
-            cout << " ";
-            tempResult = bitwise_multiply(tempResult,values[j+1]) <= result ? bitwise_multiply(tempResult,values[j+1]) : (bitwise_add(tempResult,values[j+1]) <= result ? bitwise_add(tempResult,values[j+1]) : bitwise_multiply(tempResult,values[j+1])); 
+    vector<string> differentVariantions{};
+    create_permutations( (values.size()-1), "", differentVariantions);
+    cout << "Found these permutaions\n";
+    for (auto i :differentVariantions ){
+        cout << i;
+        cout << "\n";
+    }
+    tempResult = values[0];
+    for(auto i : differentVariantions){
+        for( int64_t j{}; j < static_cast<int64_t>(i.size())+1; j++){
+            if(i[j] == 'x'){
+                tempResult += (tempResult * values[j+1]);
+                cout << "Now checking: ";
+                cout << tempResult;
+                cout << i[j];
+                cout << values[j+1];
+                cout << "=";
+                cout << tempResult;
+                cout << "\n\n";
+            }else if(i[j] == '+'){
+                tempResult += (tempResult + values[j+1]);
+                cout << "Now checking: ";
+                cout << tempResult;
+                cout << i[j];
+                cout << values[j+1];
+                cout << "=";
+                cout << tempResult;
+                cout << "\n\n";
+            } 
         }
-        if (tempResult == result){
-            cout << " This one worked, with result: ";
+        if(tempResult == result){
+            cout << "This works: ";
+            for (auto k: values){
+                cout << k;
+                cout << " ";
+            }
+            return;
         }else{
-            cout << " Not ok, with result: ";
+            tempResult = values[0];
         }
-        cout << tempResult;
-        cout << " \n";
-    //}
+    }
+        
 }
 
 void evaluate_functions(DATA & data){
@@ -116,6 +153,9 @@ void evaluate_functions(DATA & data){
         cout << ": ";
         check_operators(data.values[i],data.sumAndOrProducts[i]);
         cout << "\n";
+        if (i== 4){
+            break;
+        }
     }
 }
 
