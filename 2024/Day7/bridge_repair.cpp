@@ -3,8 +3,11 @@
 #include <sstream>
 #include <vector>
 #include <utility>
+#include <chrono>
+
 
 using namespace std;
+using namespace chrono;
 
 class DATA {
 public:
@@ -56,7 +59,7 @@ void read_file(DATA& data, string const& filename = "input.txt") {
 }
 
 
-void create_permutations(size_t const& size, string str, vector<string> & differentVariantions, vector<char> operators= {'x','+'}){
+void create_permutations(size_t const& size, string str, vector<string> & differentVariantions, vector<char> operators= {'x','+','|'}){
     if(size == str.size()){
         differentVariantions.push_back(str);
         return;
@@ -79,9 +82,11 @@ int64_t check_operators(std::vector<int64_t> const& values, int64_t const& resul
                 tempResult = tempResult*values[j+1];
             }else if(i[j] == '+'){
                 tempResult = tempResult + values[j+1];
-            } 
+            }else if(i[j] == '|'){
+                tempResult = stoull(to_string(tempResult) + to_string(values[j+1]));
+            }
             if(tempResult > result){
-                continue;
+                break;
             }
         }
         if(tempResult == result){
@@ -105,7 +110,12 @@ void evaluate_functions(DATA & data){
 int main(){
     DATA data;
     read_file(data);
+    auto start = high_resolution_clock::now();
     evaluate_functions(data);
-    cout << "Total sums are = ";
-    cout << data.totalSums;
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    cout << "Time taken by function: "
+         << duration.count() << " microseconds" << endl;
+    cout << "Total sums are = " << data.totalSums;
+
 }
