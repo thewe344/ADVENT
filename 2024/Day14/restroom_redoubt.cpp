@@ -60,7 +60,6 @@ void add_input(Bathroom & data, string & line){
     regex regPattern(R"(p=(\d+),(\d+)\s+v=(-?\d+),(-?\d+))");
     smatch matchedNumbers{};
     if(regex_search(line, matchedNumbers, regPattern)){
-        cout << "Matched string found "  << matchedNumbers[1] << " "<< matchedNumbers[2] << " "<< matchedNumbers[3] << matchedNumbers[4] <<endl;
         Bathroom::Robot tempRobot{};
         tempRobot.position.first = stoll(matchedNumbers[1]);
         tempRobot.position.second = stoll(matchedNumbers[2]);
@@ -114,8 +113,30 @@ void move_robot(Bathroom & data, vector<Bathroom::Robot> const& vectorOfRobots){
     }
 }
 
+
+void append_to_file(Bathroom const& data, int64_t const& time,const string& filename="output_text.txt") {
+    std::ofstream file(filename, std::ios::app);
+    if (!file) {
+        std::cerr << "Error: Unable to open file " << filename << std::endl;
+        return;
+    }
+    file << "At time: " << time << endl;
+    for (auto i : data.map){
+        for (auto j : i){
+            if(j.empty()){
+                file << '.';
+            }else{
+                file << j.size();
+            }
+        }
+        file << endl;
+    }
+    file << std::endl;
+    file.close();
+}
+
 void move_in_time(Bathroom & data){
-    for(int8_t i{}; i<100; i++){
+    for(int64_t i{}; i<10000; i++){
         for(auto j : data.map){
             for(auto k : j){
                 if(k.empty()){
@@ -127,50 +148,38 @@ void move_in_time(Bathroom & data){
         }
         data.map = data.tempMap;
         data.reset_map(data.tempMap);
+         if ((i - 78) % 101 == 0 && (i - 78) >= 0){
+            append_to_file(data,i);
+        }else if ((i - 51) % 103 == 0 && (i - 51) >= 0){
+            append_to_file(data,i);
+        }
     }
 }
 
-void count_in_quadrant(Bathroom & data){
-    for(int64_t i {}; i <static_cast<int64_t>(data.map.size())/2 ;i++){
-        for(int64_t j {}; j <static_cast<int64_t>(data.map[i].size())/2;j++){
-            if(data.map[i][j].empty()){
+void count_in_quadrant(Bathroom& data) {
+    int64_t midRow = static_cast<int64_t>(data.map.size()) / 2;
+    int64_t midCol = static_cast<int64_t>(data.map[0].size()) / 2;
+
+    for (int64_t i = 0; i < static_cast<int64_t>(data.map.size()); i++) {
+        for (int64_t j = 0; j < static_cast<int64_t>(data.map[i].size()); j++) {
+            if (data.map[i][j].empty()) {
                 continue;
-            }else{
+            }
+
+            // Determine the quadrant and update the corresponding count
+            if (i < midRow && j < midCol) {
                 data.leftUp += data.map[i][j].size();
-            }
-        }
-    }
-
-    for(int64_t i {}; i <static_cast<int64_t>(data.map.size())/2;i++){
-        for(int64_t j {(static_cast<int64_t>(data.map[i].size())/2)+1}; j <static_cast<int64_t>(data.map[i].size());j++){
-            if(data.map[i][j].empty()){
-                continue;
-            }else{
+            } else if (i < midRow && j >= midCol) {
                 data.rightUp += data.map[i][j].size();
-            }
-        }
-    }
-
-    for(int64_t i {(static_cast<int64_t>(data.map.size())/2)+1}; i <static_cast<int64_t>(data.map.size());i++){
-        for(int64_t j {}; j <static_cast<int64_t>(data.map[i].size())/2;j++){
-            if(data.map[i][j].empty()){
-                continue;
-            }else{
+            } else if (i >= midRow && j < midCol) {
                 data.leftDown += data.map[i][j].size();
-            }
-        }
-    }
-
-    for(int64_t i {(static_cast<int64_t>(data.map.size())/2)+1}; i <static_cast<int64_t>(data.map.size());i++){
-        for(int64_t j {(static_cast<int64_t>(data.map[i].size())/2)+1}; j <static_cast<int64_t>(data.map[i].size());j++){
-            if(data.map[i][j].empty()){
-                continue;
-            }else{
+            } else {
                 data.rightDown += data.map[i][j].size();
             }
         }
     }
-    data.safetyFactor = data.leftUp*data.rightUp*data.rightDown*data.leftDown;
+
+    data.safetyFactor = data.leftUp * data.rightUp * data.rightDown * data.leftDown;
 }
 
 
